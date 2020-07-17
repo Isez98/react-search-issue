@@ -3,7 +3,7 @@ const axios = require('axios');
 function getGithubInfo(itemString, pageCounter){  
   const gitJson = axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=${pageCounter}&per_page=100`, {
     'headers':{
-      'Authorization': `token ${'8618f703d80a1d300125e6591e8c6dc7ed267967'}`
+      'Authorization': `token ${'67606b33c838824b168125424667da26550a6db7'}`
     }
   })
   .then(function(response) {

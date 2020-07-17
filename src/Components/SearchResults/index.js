@@ -5,13 +5,13 @@ import '../../App/App.css'
 class SearchResults extends React.Component{
   constructor(props) {
     super(props);
-    this.state = { searchResults: [], inputValue: '', cursor: 0, gray: true }
+    this.state = { searchResults: [], inputValue: '', cursor: 0, gray: true, lastState: 0 }
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
   async handleChange(e){
-    let cursor = 1;
+    let cursor = 0;
     this.setState({cursor});
     this.setState({ inputValue: e.target.value })
     let searchResults = []
@@ -21,27 +21,29 @@ class SearchResults extends React.Component{
   }
 
   handleKeyDown(e) {
-    const cursor = this.state.cursor;
-    const searchResults = this.state.searchResults;
-    if (e.keyCode === 38 && cursor >= 0) {
+    const {cursor, searchResults, lastState} = this.state;
+    if (e.keyCode === 38 && cursor > 0 ) {
       this.setState( prevState => ({
+        lastState: this.state.cursor,
         cursor: prevState.cursor - 1
       }))
-      this.setState({gray: this.state.gray})
-    } else if (e.keyCode === 40 && cursor < searchResults.length) {
+      console.log(lastState + "  " + cursor + "  " + e.keyCode);
+      document.getElementById(lastState).style.background = 'white'
+      document.getElementById(this.state.cursor).style.background = 'gray';
+      this.setState({inputValue: searchResults[cursor]})
+    } else if (e.keyCode === 40 && cursor < searchResults.length - 1) {
       this.setState( prevState => ({
+        lastState: this.state.cursor,
         cursor: prevState.cursor + 1
       }))
-      console.log(searchResults[cursor])
+      console.log(lastState + "  " + cursor + "  " + e.keyCode);
+      document.getElementById(lastState).style.background = 'white'
+      document.getElementById(this.state.cursor).style.background = 'gray';
+      this.setState({inputValue: searchResults[cursor]})
     }
   }
 
-  changeColor(){
-    this.setState({gray: !this.state.gray})
-  }
-
   render(){
-    let itemClass = this.state.gray ? 'unfocused-item' : 'focused-item';
     return(
       <div className="search-engine-container">
         <h1 className="engine-title">React Search Issues</h1>
@@ -55,10 +57,8 @@ class SearchResults extends React.Component{
         <ul> 
         {
           (this.state.searchResults || []).map((result, index) => (
-            <li 
-              key={index} 
-              style={ this.state.cursor == index ? { backgroundColor: this.state.gray } : { backgroundColor: !this.state.gray }}>
-              <div className="search-results">
+            <li key={index}>
+              <div id={index} className="search-results">
                 <div >{result}</div>
               </div>
             </li>
