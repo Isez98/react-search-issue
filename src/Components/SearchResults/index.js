@@ -5,7 +5,7 @@ import '../../App/App.css'
 class SearchResults extends React.Component{
   constructor(props) {
     super(props);
-    this.state = { searchResults: [], inputValue: '', cursor: 0, lastState: 0 }
+    this.state = { searchResults: [], inputValue: '', cursor: 0}
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
   }
@@ -27,26 +27,20 @@ class SearchResults extends React.Component{
   //down or up key, which then triggers the change in state for
   //the element selected by the cursor
   handleKeyDown(e) {
-    const {cursor, searchResults, lastState} = this.state;
+    const {cursor, searchResults} = this.state;
     //Up key
     if (e.keyCode === 38 && cursor > 0 ) {
       this.setState( prevState => ({
-        lastState: this.state.cursor,
-        cursor: prevState.cursor - 1
+        cursor: prevState.cursor - 1,
+        inputValue: searchResults[cursor - 1]
       }))
-      document.getElementById(lastState).style.background = 'white'
-      document.getElementById(this.state.cursor).style.background = 'gray';
-      this.setState({inputValue: searchResults[cursor]})
     } 
     //Down key
     else if (e.keyCode === 40 && cursor < searchResults.length - 1) {
     this.setState( prevState => ({
-      lastState: this.state.cursor,
-      cursor: prevState.cursor + 1
+      cursor: prevState.cursor + 1,
+      inputValue: searchResults[cursor + 1]
     }))
-    document.getElementById(lastState).style.background = 'white'
-    document.getElementById(this.state.cursor).style.background = 'gray';
-    this.setState({inputValue: searchResults[cursor]})
     }
   }
 
@@ -66,7 +60,9 @@ class SearchResults extends React.Component{
           //The items in the array are mapped here
           (this.state.searchResults || []).map((result, index) => (
             <li key={index}>
-              <div id={index} className="search-results">
+              <div id={index} className="search-results"
+              style={this.state.cursor === index ? {backgroundColor: 'gray'} : null}
+              >
                 <div className="text-container">{result}</div>
               </div>
             </li>

@@ -1,7 +1,7 @@
 //The React repo is not accessible to all public, therefore
 //Axios was implemented to make the http request and to 
 //send a PAT(personal access token) as a header
-import GITHUB_PAT from '../src/keys';
+import GITHUB_PAT from './keys.js';
 const axios = require('axios');
 
 //The Github API allow for traveling pages in the repos, along with petitioning
@@ -12,7 +12,7 @@ function GithubPayload(){
   //It also importan to leave the template. Only replace the word GITHUB_PAT with your own token
   const githubList = axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=1&per_page=100`, {
     'headers':{
-      'Authorization': `token ${'GITHUB_PAT'}` 
+      'Authorization': `token ${GITHUB_PAT}` 
     }
   })
   .then(function(response) {
