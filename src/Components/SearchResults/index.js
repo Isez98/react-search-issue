@@ -44,6 +44,7 @@ class SearchResults extends React.Component{
       inputValue: searchResults[cursor + 1][0]
     }))
     }
+    //Enter key, changes text and redirect to GitHub issue page.
     else if (e.keyCode === 13){
       window.open(`${searchResults[cursor][1]}`)
       this.setState({cursor: 0 })
@@ -51,14 +52,15 @@ class SearchResults extends React.Component{
     }
   }
 
+  //Triggers when mouse enters list area
   handleMouseEnter(index){    
     this.setState({cursor : index})
   }
-
+  
+  //Triggers when mouse left clicks, redirect to issue page
   handleOnClick(title, link){
     this.setState({inputValue: title})
     window.open(`${link}`)
-    //window.open("https://www.google.com")
   }
 
   render(){
