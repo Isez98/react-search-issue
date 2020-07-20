@@ -16,9 +16,9 @@ function GithubPayload(){
     }
   })
   .then(function(response) {
-    const miniList = Object.keys(response.data).map((key) => [response.data[key].title]);    
+    const miniList = Object.keys(response.data).map((key) => [[response.data[key].title], response.data[key].url]); 
     miniList.map((value, index) => {
-      itemArray[index] = value[0];
+      itemArray[index] = [value[0], String(value[1]).replace(`api.`,``).replace(`/repos`,``)];
       return itemArray;
     }    
     );
@@ -34,7 +34,7 @@ function GithubPayload(){
 //implement a regex to find elements most associated with what the user is searching for.
 //This method return an array of at most five items.
 export async function GetSearchData(search){
-  let issueList = await GithubPayload();      
+  let issueList = await GithubPayload();  
   var results = [''];
   if(search === '')
     return results;

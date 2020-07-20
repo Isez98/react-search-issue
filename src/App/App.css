@@ -18,6 +18,7 @@
   width: 35.5rem;
   left: 28rem;
   background-color: white;
+  cursor: pointer;
 }
 
 .search-box {

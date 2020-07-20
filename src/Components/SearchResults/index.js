@@ -8,6 +8,8 @@ class SearchResults extends React.Component{
     this.state = { searchResults: [], inputValue: '', cursor: 0}
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleMouseEnter = this.handleMouseEnter.bind(this)
+    this.handleOnClick = this.handleOnClick.bind(this)
   }
 
   //Asynchronous function to handle changes made to the input element
@@ -32,16 +34,31 @@ class SearchResults extends React.Component{
     if (e.keyCode === 38 && cursor > 0 ) {
       this.setState( prevState => ({
         cursor: prevState.cursor - 1,
-        inputValue: searchResults[cursor - 1]
+        inputValue: searchResults[cursor - 1][0]
       }))
     } 
     //Down key
     else if (e.keyCode === 40 && cursor < searchResults.length - 1) {
     this.setState( prevState => ({
       cursor: prevState.cursor + 1,
-      inputValue: searchResults[cursor + 1]
+      inputValue: searchResults[cursor + 1][0]
     }))
     }
+    else if (e.keyCode === 13){
+      window.open(`${searchResults[cursor][1]}`)
+      this.setState({cursor: 0 })
+      
+    }
+  }
+
+  handleMouseEnter(index){    
+    this.setState({cursor : index})
+  }
+
+  handleOnClick(title, link){
+    this.setState({inputValue: title})
+    window.open(`${link}`)
+    //window.open("https://www.google.com")
   }
 
   render(){
@@ -60,10 +77,12 @@ class SearchResults extends React.Component{
           //The items in the array are mapped here
           (this.state.searchResults || []).map((result, index) => (
             <li key={index}>
-              <div id={index} className="search-results"
+              <div key={index} className="search-results"
+              onMouseEnter={(e) => this.handleMouseEnter(index, e)}
+              onClick={(e) => this.handleOnClick(result[0], result[1], e)}
               style={this.state.cursor === index ? {backgroundColor: 'gray'} : null}
               >
-                <div className="text-container">{result}</div>
+                <div className="text-container">{result[0]}</div>
               </div>
             </li>
           ))
