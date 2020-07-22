@@ -20,8 +20,7 @@ function GithubPayload(){
           title: value.title,
           url: String(value.url).replace(`api.`,``).replace(`/repos`,``),
         }
-    })
-    
+    })    
     return list 
   })
   .catch(function(error){
@@ -34,19 +33,11 @@ function GithubPayload(){
 //implement a regex to find elements most associated with what the user is searching for.
 //This method return an array of at most five items.
 export async function GetSearchData(search){
-  let issueList = await GithubPayload();  
-  
+  let issueList = await GithubPayload();    
   if(search === '')
-    return [''];
-  
+    return [''];  
   var rx = new RegExp('([^"]*'+search+'[^"]*)','gi');
-  
-
   const listFiltered = issueList.filter(value => String(value.title).match(rx))
-  
-
   const slicedList = listFiltered.slice(0, 5)
-  
-
   return slicedList;  
 }

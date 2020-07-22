@@ -1,94 +1,84 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {GetSearchData} from '../../github.js'
 import '../../App/App.css'
 
-class SearchResults extends React.Component{
-  constructor(props) {
-    super(props);
-    this.state = { searchResults: [], inputValue: '', cursor: 0 }
-  }
+function SearchResults(props){
+  //Declaration of constant state values
+  const [cursor, setCursor] = useState(0);
+  const [inputValue, setInputValue] = useState(``);
+  const [searchResults, setSearchResults] = useState([]);
 
   //Asynchronous function to handle changes made to the input element
   //This event triggers the GetData method, which makes the search
   //for the React library issues.
-  handleChange = async (e) => {
-    let cursor = 0;
-    this.setState({cursor});
-    this.setState({ inputValue: e.target.value })
-    let searchResults = []
+  const handleChange = async (e) => {
+    setCursor(0)
+    setInputValue(e.target.value);
+    setSearchResults([]);
     if(e.target.value !== "" )
-      searchResults = await GetSearchData(this.state.inputValue);      
-    this.setState({ searchResults });
+      setSearchResults(await GetSearchData(inputValue));
   }
 
   //The KeyDown handler listents to when the user presses the 
   //down or up key, which then triggers the change in state for
   //the element selected by the cursor
-  handleKeyDown = (e) => {
-    const {cursor, searchResults} = this.state;
+  const handleKeyDown = (e) => {
     //Up key
     if (e.keyCode === 38 && cursor > 0 ) {
-      this.setState( prevState => ({
-        cursor: prevState.cursor - 1,
-        inputValue: searchResults[cursor - 1][0]
-      }))
+      setCursor(cursor - 1);
+      setInputValue(searchResults[cursor - 1].title);   
     } 
     //Down key
     else if (e.keyCode === 40 && cursor < searchResults.length - 1) {
-    this.setState( prevState => ({
-      cursor: prevState.cursor + 1,
-      inputValue: searchResults[cursor + 1][0]
-    }))
+      setCursor(cursor + 1);
+      setInputValue(searchResults[cursor + 1].title);
     }
     //Enter key, changes text and redirect to GitHub issue page.
     else if (e.keyCode === 13){
-      window.open(`${searchResults[cursor][1]}`)
-      this.setState({cursor: 0 })
-      
+      window.open(`${searchResults[cursor].url}`)
+      setCursor(0);      
     }
   }
 
   //Triggers when mouse enters list area
-  handleMouseEnter = (index) => { 
-    this.setState({cursor : index})
+  const handleMouseEnter = (index) => { 
+    setCursor(index);
   }
   
   //Triggers when mouse left clicks, redirect to issue page
-  handleOnClick = (title, link) =>{
-    this.setState({inputValue: title})
+  const handleOnClick = (title, link) =>{
+    setInputValue(title);
     window.open(`${link}`)
   }
-
-  render(){
-    return(
-      <div className="search-engine-container">
-        <h1 className="engine-title">React Search Issues</h1>
-        <input 
-          type="text" 
-          className="search-box" 
-          onChange={this.handleChange} 
-          onKeyDown={this.handleKeyDown}
-          value={this.state.inputValue}>
-        </input>
-        <ul> 
-        {
-          //The items in the array are mapped here
-          (this.state.searchResults || []).map((result, index) => (
-            <li key={index}>
-              <div key={index} className="search-results"
-              onMouseEnter={(e) => this.handleMouseEnter(index, e)}
-              onClick={(e) => this.handleOnClick(result.title, result.url, e)}
-              style={this.state.cursor === index ? {backgroundColor: 'gray'} : null}
-              >
-                <div className="text-container">{result.title}</div>
-              </div>
-            </li>
-          ))
-        } 
-        </ul>
-      </div>
-    );
-  }
+  
+  return(
+    <div className="search-engine-container">
+      <h1 className="engine-title">React Search Issues</h1>
+      <input 
+        type="text" 
+        className="search-box" 
+        onChange={handleChange} 
+        onKeyDown={handleKeyDown}
+        value={inputValue}>
+      </input>
+      <ul> 
+      {
+        //The items in the array are mapped here
+        (searchResults || []).map((result, index) => (
+          <li key={index}>
+            <div key={index} className="search-results"
+            onMouseEnter={(e) => handleMouseEnter(index, e)}
+            onClick={(e) => handleOnClick(result.title, result.url, e)}
+            style={cursor === index ? {backgroundColor: 'gray'} : null}
+            >
+              <div className="text-container">{result.title}</div>
+            </div>
+          </li>
+        ))
+      } 
+      </ul>
+    </div>
+  );  
 }
 
 export default SearchResults;
