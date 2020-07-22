@@ -5,17 +5,13 @@ import '../../App/App.css'
 class SearchResults extends React.Component{
   constructor(props) {
     super(props);
-    this.state = { searchResults: [], inputValue: '', cursor: 0}
-    this.handleChange = this.handleChange.bind(this)
-    this.handleKeyDown = this.handleKeyDown.bind(this)
-    this.handleMouseEnter = this.handleMouseEnter.bind(this)
-    this.handleOnClick = this.handleOnClick.bind(this)
+    this.state = { searchResults: [], inputValue: '', cursor: 0 }
   }
 
   //Asynchronous function to handle changes made to the input element
   //This event triggers the GetData method, which makes the search
   //for the React library issues.
-  async handleChange(e){
+  handleChange = async (e) => {
     let cursor = 0;
     this.setState({cursor});
     this.setState({ inputValue: e.target.value })
@@ -28,7 +24,7 @@ class SearchResults extends React.Component{
   //The KeyDown handler listents to when the user presses the 
   //down or up key, which then triggers the change in state for
   //the element selected by the cursor
-  handleKeyDown(e) {
+  handleKeyDown = (e) => {
     const {cursor, searchResults} = this.state;
     //Up key
     if (e.keyCode === 38 && cursor > 0 ) {
@@ -53,12 +49,12 @@ class SearchResults extends React.Component{
   }
 
   //Triggers when mouse enters list area
-  handleMouseEnter(index){    
+  handleMouseEnter = (index) => { 
     this.setState({cursor : index})
   }
   
   //Triggers when mouse left clicks, redirect to issue page
-  handleOnClick(title, link){
+  handleOnClick = (title, link) =>{
     this.setState({inputValue: title})
     window.open(`${link}`)
   }
@@ -81,10 +77,10 @@ class SearchResults extends React.Component{
             <li key={index}>
               <div key={index} className="search-results"
               onMouseEnter={(e) => this.handleMouseEnter(index, e)}
-              onClick={(e) => this.handleOnClick(result[0], result[1], e)}
+              onClick={(e) => this.handleOnClick(result.title, result.url, e)}
               style={this.state.cursor === index ? {backgroundColor: 'gray'} : null}
               >
-                <div className="text-container">{result[0]}</div>
+                <div className="text-container">{result.title}</div>
               </div>
             </li>
           ))

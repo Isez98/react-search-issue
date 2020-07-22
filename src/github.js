@@ -7,7 +7,6 @@ const axios = require('axios');
 //The Github API allow for traveling pages in the repos, along with petitioning
 //a maximum of 100 elements at a time.
 function GithubPayload(){
-  let itemArray = [];  
   //IMPORTANT! Replace GITHUB_PAT with your own GitHub Personal Access Token
   //It also importan to leave the template. Only replace the word GITHUB_PAT with your own token
   const githubList = axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=1&per_page=100`, {
@@ -16,16 +15,17 @@ function GithubPayload(){
     }
   })
   .then(function(response) {
-    const miniList = Object.keys(response.data).map((key) => [[response.data[key].title], response.data[key].url]); 
-    miniList.map((value, index) => {
-      itemArray[index] = [value[0], String(value[1]).replace(`api.`,``).replace(`/repos`,``)];
-      return itemArray;
-    }    
-    );
-    return itemArray  
+    const list = response.data.map((value) => {
+        return {
+          title: value.title,
+          url: String(value.url).replace(`api.`,``).replace(`/repos`,``),
+        }
+    })
+    
+    return list 
   })
   .catch(function(error){
-    console.log(error);
+    console.error(error);
   });
   return githubList;
 }
@@ -35,17 +35,18 @@ function GithubPayload(){
 //This method return an array of at most five items.
 export async function GetSearchData(search){
   let issueList = await GithubPayload();  
-  var results = [''];
+  
   if(search === '')
-    return results;
+    return [''];
+  
   var rx = new RegExp('([^"]*'+search+'[^"]*)','gi');
-  for(var key of issueList){
-    if(String(key).match(rx))
-      {
-        if (results.length >= 5)
-          break;
-        results.push(key);          
-      }
-  }
-  return results;  
+  
+
+  const listFiltered = issueList.filter(value => String(value.title).match(rx))
+  
+
+  const slicedList = listFiltered.slice(0, 5)
+  
+
+  return slicedList;  
 }
