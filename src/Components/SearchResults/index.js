@@ -19,7 +19,7 @@ function SearchResults(props){
     setInputValue(e.target.value);
     setSearchResults([]);
     if(e.target.value !== "" )
-      setSearchResults( getSearchData(inputValue, data));
+      setSearchResults(getSearchData(inputValue, data));
   }
 
   // Fetch data

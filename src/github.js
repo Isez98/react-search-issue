@@ -6,27 +6,30 @@ const axios = require('axios');
 
 //The Github API allow for traveling pages in the repos, along with petitioning
 //a maximum of 100 elements at a time.
-function githubPayload(){
+async function githubPayload(){
   //IMPORTANT! Replace GITHUB_PAT with your own GitHub Personal Access Token
   //It also importan to leave the template. Only replace the word GITHUB_PAT with your own token
-  const githubList = axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=1&per_page=100`, {
-    'headers':{
-      'Authorization': `token ${GITHUB_PAT}` 
-    }
-  })
-  .then(function(response) {
-    const list = response.data.map((value) => {
-        return {
-          title: value.title,
-          url: String(value.url).replace(`api.`,``).replace(`/repos`,``),
-        }
-    })    
-    return list 
-  })
-  .catch(function(error){
+  var resultList = [];
+  try {
+    const githubList = await axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=1&per_page=100`, {
+      'headers':{
+        'Authorization': `token ${GITHUB_PAT}` 
+      }
+    })
+
+    resultList = githubList.data.map( value => {
+      return {
+        title: value.title,
+        url: String(value.url).replace(`api.`,``).replace(`/repos`,``),
+      }
+    })
+
+  } catch (error) {
     console.error(error);
-  });
-  return githubList;
+  }  
+
+  return resultList;
+
 }
 
 //We reveive an array from the GetSearchData and use the search parameter to 
@@ -45,14 +48,14 @@ export function getSearchData(search, itemList){
 
 
 export async function getItems() {
-  let itemList;
+
   if (window.sessionStorage.getItem(`itemList`) === null) {
-    itemList = await githubPayload();
-    window.sessionStorage.setItem("itemList", JSON.stringify(itemList));
-  }
-  else {
-    itemList = JSON.parse(window.sessionStorage.getItem(`itemList`));
+    window.sessionStorage.setItem("itemList", 
+      JSON.stringify(
+        await githubPayload()
+      )
+    );
   }
 
-  return itemList;
+  return JSON.parse(window.sessionStorage.getItem(`itemList`));
 }
