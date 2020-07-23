@@ -6,7 +6,7 @@ const axios = require('axios');
 
 //The Github API allow for traveling pages in the repos, along with petitioning
 //a maximum of 100 elements at a time.
-function GithubPayload(){
+export function GithubPayload(){
   //IMPORTANT! Replace GITHUB_PAT with your own GitHub Personal Access Token
   //It also importan to leave the template. Only replace the word GITHUB_PAT with your own token
   const githubList = axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=1&per_page=100`, {

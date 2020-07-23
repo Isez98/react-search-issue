@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {GetSearchData} from '../../github.js'
 import '../../App/App.css'
 
+import { key } from "./KeysCodes";
+
 function SearchResults(props){
   //Declaration of constant state values
   const [cursor, setCursor] = useState(0);
@@ -24,17 +26,17 @@ function SearchResults(props){
   //the element selected by the cursor
   const handleKeyDown = (e) => {
     //Up key
-    if (e.keyCode === 38 && cursor > 0 ) {
+    if (e.keyCode === key.UP && cursor > 0 ) {
       setCursor(cursor - 1);
       setInputValue(searchResults[cursor - 1].title);   
     } 
     //Down key
-    else if (e.keyCode === 40 && cursor < searchResults.length - 1) {
+    else if (e.keyCode === key.DOWN && cursor < searchResults.length - 1) {
       setCursor(cursor + 1);
       setInputValue(searchResults[cursor + 1].title);
     }
     //Enter key, changes text and redirect to GitHub issue page.
-    else if (e.keyCode === 13){
+    else if (e.keyCode === key.ENTER){
       window.open(`${searchResults[cursor].url}`)
       setCursor(0);      
     }
