@@ -33,18 +33,28 @@ function GithubPayload(){
 //implement a regex to find elements most associated with what the user is searching for.
 //This method return an array of at most five items.
 export async function GetSearchData(search){
-  let issueList;    
-  if (window.sessionStorage.getItem(`issueList`) === null){
-    issueList = await GithubPayload();
-    window.sessionStorage.setItem("issueList", JSON.stringify(issueList));
-  }
-  else{
-    issueList = JSON.parse(window.sessionStorage.getItem(`issueList`));
-  }
+  let issueList;
+  issueList = await getItems();
+
   if(search === '')
     return [''];  
   var rx = new RegExp('([^"]*'+search+'[^"]*)','gi');
   const listFiltered = issueList.filter(value => String(value.title).match(rx))
   const slicedList = listFiltered.slice(0, 5)
   return slicedList;  
+}
+
+
+
+async function getItems() {
+  let issueList;
+  if (window.sessionStorage.getItem(`issueList`) === null) {
+    issueList = await GithubPayload();
+    window.sessionStorage.setItem("issueList", JSON.stringify(issueList));
+  }
+  else {
+    issueList = JSON.parse(window.sessionStorage.getItem(`issueList`));
+  }
+
+  return issueList;
 }
