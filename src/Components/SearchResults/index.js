@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {GetSearchData} from '../../github.js'
+import React, {useState, useEffect} from 'react';
+import {getSearchData, getItems} from '../../github.js'
 import '../../App/App.css'
 
 import { key } from "./KeysCodes";
@@ -9,17 +9,26 @@ function SearchResults(props){
   const [cursor, setCursor] = useState(0);
   const [inputValue, setInputValue] = useState(``);
   const [searchResults, setSearchResults] = useState([]);
+  const [data, setData] = useState([]);
 
   //Asynchronous function to handle changes made to the input element
   //This event triggers the GetData method, which makes the search
   //for the React library issues.
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     setCursor(0)
     setInputValue(e.target.value);
     setSearchResults([]);
     if(e.target.value !== "" )
-      setSearchResults(await GetSearchData(inputValue));
+      setSearchResults( getSearchData(inputValue, data));
   }
+
+  // Fetch data
+  useEffect(() => {
+    async function fetchData() {
+      setData(await getItems());
+    }
+    fetchData();
+  }, [])
 
   //The KeyDown handler listents to when the user presses the 
   //down or up key, which then triggers the change in state for

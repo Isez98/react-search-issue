@@ -6,7 +6,7 @@ const axios = require('axios');
 
 //The Github API allow for traveling pages in the repos, along with petitioning
 //a maximum of 100 elements at a time.
-export function GithubPayload(){
+function githubPayload(){
   //IMPORTANT! Replace GITHUB_PAT with your own GitHub Personal Access Token
   //It also importan to leave the template. Only replace the word GITHUB_PAT with your own token
   const githubList = axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=1&per_page=100`, {
@@ -32,29 +32,27 @@ export function GithubPayload(){
 //We reveive an array from the GetSearchData and use the search parameter to 
 //implement a regex to find elements most associated with what the user is searching for.
 //This method return an array of at most five items.
-export async function GetSearchData(search){
-  let issueList;
-  issueList = await getItems();
-
+export function getSearchData(search, itemList){
   if(search === '')
-    return [''];  
+    return [''];
+  
   var rx = new RegExp('([^"]*'+search+'[^"]*)','gi');
-  const listFiltered = issueList.filter(value => String(value.title).match(rx))
+  const listFiltered = itemList.filter(value => String(value.title).match(rx))
   const slicedList = listFiltered.slice(0, 5)
   return slicedList;  
 }
 
 
 
-async function getItems() {
-  let issueList;
-  if (window.sessionStorage.getItem(`issueList`) === null) {
-    issueList = await GithubPayload();
-    window.sessionStorage.setItem("issueList", JSON.stringify(issueList));
+export async function getItems() {
+  let itemList;
+  if (window.sessionStorage.getItem(`itemList`) === null) {
+    itemList = await githubPayload();
+    window.sessionStorage.setItem("itemList", JSON.stringify(itemList));
   }
   else {
-    issueList = JSON.parse(window.sessionStorage.getItem(`issueList`));
+    itemList = JSON.parse(window.sessionStorage.getItem(`itemList`));
   }
 
-  return issueList;
+  return itemList;
 }
