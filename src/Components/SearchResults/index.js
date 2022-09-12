@@ -30,7 +30,7 @@ function SearchResults(props){
     fetchData();
   }, [])
 
-  //The KeyDown handler listents to when the user presses the 
+  //The KeyDown handler listens to when the user presses the 
   //down or up key, which then triggers the change in state for
   //the element selected by the cursor
   const handleKeyDown = (e) => {
