@@ -9,7 +9,6 @@ function SearchResults(props){
   const [cursor, setCursor] = useState(0);
   const [inputValue, setInputValue] = useState(``);
   const [searchResults, setSearchResults] = useState([]);
-  const [data, setData] = useState([]);
 
   //Asynchronous function to handle changes made to the input element
   //This event triggers the GetData method, which makes the search
@@ -18,17 +17,13 @@ function SearchResults(props){
     setCursor(0)
     setInputValue(e.target.value);
     setSearchResults([]);
-    if(e.target.value !== "" )
-      setSearchResults(getSearchData(inputValue, data));
   }
 
-  // Fetch data
   useEffect(() => {
-    async function fetchData() {
-      setData(await getItems());
-    }
-    fetchData();
-  }, [])
+    setSearchResults(getItems())
+  }, [inputValue])
+
+  useEffect(() => {console.log(searchResults)}, [searchResults])
 
   //The KeyDown handler listens to when the user presses the 
   //down or up key, which then triggers the change in state for
@@ -61,6 +56,22 @@ function SearchResults(props){
     setInputValue(title);
     window.open(`${link}`)
   }
+
+  const renderedItems = () => {
+    if (searchResults){
+      searchResults.map((result, index) => (
+        <li key={index}>
+          <div key={index} className="search-results"
+          onMouseEnter={(e) => handleMouseEnter(index, e)}
+          onClick={(e) => handleOnClick(result.title, result.url, e)}
+          style={cursor === index ? {backgroundColor: 'gray'} : null}
+          >
+            <div className="text-container">{result.title}</div>
+          </div>
+        </li>
+      ))
+    }
+  }
   
   return(
     <div className="search-engine-container">
@@ -78,17 +89,7 @@ function SearchResults(props){
       <ul> 
       {
         //The items in the array are mapped here
-        (searchResults || []).map((result, index) => (
-          <li key={index}>
-            <div key={index} className="search-results"
-            onMouseEnter={(e) => handleMouseEnter(index, e)}
-            onClick={(e) => handleOnClick(result.title, result.url, e)}
-            style={cursor === index ? {backgroundColor: 'gray'} : null}
-            >
-              <div className="text-container">{result.title}</div>
-            </div>
-          </li>
-        ))
+        renderedItems
       } 
       </ul>
       </div>   

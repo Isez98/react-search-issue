@@ -8,8 +8,8 @@ const axios = require('axios');
 //a maximum of 100 elements at a time.
 async function githubPayload(){
   //IMPORTANT! Replace GITHUB_PAT with your own GitHub Personal Access Token
-  //It also importan to leave the template. Only replace the word GITHUB_PAT with your own token
-  var resultList = [];
+  //It is also important to leave the template. Only replace the word GITHUB_PAT with your own token
+  let resultList = [];
   try {
     const githubList = await axios.default.get(`https://api.github.com/repos/facebook/react/issues?page=1&per_page=100`, {
       'headers':{
@@ -32,14 +32,14 @@ async function githubPayload(){
 
 }
 
-//We reveive an array from the GetSearchData and use the search parameter to 
+//We receive an array from the GetSearchData and use the search parameter to 
 //implement a regex to find elements most associated with what the user is searching for.
 //This method return an array of at most five items.
 export function getSearchData(search, itemList){
   if(search === '')
     return [''];
   
-  var rx = new RegExp('([^"]*'+search+'[^"]*)','gi');
+  let rx = new RegExp('([^"]*'+search+'[^"]*)','gi');
   const listFiltered = itemList.filter(value => String(value.title).match(rx))
   const slicedList = listFiltered.slice(0, 5)
   return slicedList;  
