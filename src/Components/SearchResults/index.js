@@ -64,8 +64,11 @@ function SearchResults(props){
   
   return(
     <div className="search-engine-container">
-      <h1 className="engine-title">React Search Issues</h1>
-      <input 
+      <div>
+        <h1 className="engine-title">React Search Issues</h1>
+      </div>
+      <div>
+          <input 
         type="text" 
         className="search-box" 
         onChange={handleChange} 
@@ -88,6 +91,7 @@ function SearchResults(props){
         ))
       } 
       </ul>
+      </div>   
     </div>
   );  
 }
